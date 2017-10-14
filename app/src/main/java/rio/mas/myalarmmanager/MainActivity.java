@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!TextUtils.isEmpty(alarmPreference.getOneTimeDate())){
             setOneTimeText();
         }
+        if (!TextUtils.isEmpty(alarmPreference.getRepeatingTime())){
+            setRepeatingText();
+        }
 
     }
     @Override
@@ -78,23 +81,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     calOneTimeTime.set(Calendar.MINUTE, minute);
                     SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
                     tvOneTimeTime.setText(dateFormat.format(calOneTimeTime.getTime()));
+                }
+            }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), true).show();
+
+        }else if (v.getId() == R.id.btn_repeating_time_alarm_time){
+            final Calendar currentDate = Calendar.getInstance();
+            new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    calRepeatTimeTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    calRepeatTimeTime.set(Calendar.MINUTE, minute);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+                    tvRepeatingTime.setText(dateFormat.format(calRepeatTimeTime.getTime()));
                     //Log.v(TAG, "The choosen one " + date.getTime());
                 }
             }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), true).show();
         }
-        else if (v.getId() == R.id.btn_set_one_time_alarm){
+        else if (v.getId() == R.id.btn_set_one_time_alarm) {
+
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String oneTimeDate = dateFormat.format(calOneTimeDate.getTime());
             SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             String oneTimeTime = timeFormat.format(calOneTimeTime.getTime());
             String oneTimeMessage = edtOneTimeMessage.getText().toString();
+
             alarmPreference.setOneTimeDate(oneTimeDate);
             alarmPreference.setOneTimeMessage(oneTimeMessage);
             alarmPreference.setOneTimeTime(oneTimeTime);
+
+            //setOneTimeText();
             alarmReceiver.setOneTimeAlarm(this, AlarmReceiver.TYPE_ONE_TIME,
                     alarmPreference.getOneTimeDate(),
                     alarmPreference.getOneTimeTime(),
                     alarmPreference.getOneTimeMessage());
+
+        }
+        else if (v.getId() == R.id.btn_repeating_time_alarm){
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            String repeatTimeTime = timeFormat.format(calRepeatTimeTime.getTime());
+            String repeatTimeMessage = edtRepeatingMessage.getText().toString();
+            alarmPreference.setRepeatingTime(repeatTimeTime);
+            alarmPreference.setRepeatingMessage(repeatTimeMessage);
+            alarmReceiver.setRepeatingAlarm(this, AlarmReceiver.TYPE_REPEATING,
+                    alarmPreference.getRepeatingTime(), alarmPreference.getRepeatingMessage());
+        }
+        else if (v.getId() == R.id.btn_cancel_repeating_alarm){
+            alarmReceiver.cancelAlarm(this, AlarmReceiver.TYPE_REPEATING);
         }
     }
 
@@ -102,5 +134,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvOneTimeTime.setText(alarmPreference.getOneTimeTime());
         tvOneTimeDate.setText(alarmPreference.getOneTimeDate());
         edtOneTimeMessage.setText(alarmPreference.getOneTimeMessage());
+    }
+
+    private void setRepeatingText() {
+        tvRepeatingTime.setText(alarmPreference.getRepeatingTime());
+        edtRepeatingMessage.setText(alarmPreference.getRepeatingMessage());
     }
 }
