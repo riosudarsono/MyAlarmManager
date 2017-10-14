@@ -96,17 +96,15 @@
         android:orientation="horizontal">
         <Button
             android:id="@+id/btn_repeating_time_alarm"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Set Repeating Alarm"
-            android:layout_weight="0.5"
-            />
+            android:layout_weight="0.5"/>
         <Button
             android:id="@+id/btn_cancel_repeating_alarm"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Batalkan Alarm"
-            android:layout_weight="0.5"
-            />
+            android:layout_weight="0.5"/>
     </LinearLayout>
 </LinearLayout>
